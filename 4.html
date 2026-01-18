@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pancong Artisan Heritage | Premium Street Pastry</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,700;0,900;1,700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Animate.css for subtle reveals -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'art-gold': '#D4AF37',
+                        'art-charcoal': '#121212',
+                        'art-beige': '#FDFCF9',
+                        'art-slate': '#2C2C2E',
+                    },
+                    fontFamily: {
+                        'serif': ['"Playfair Display"', 'serif'],
+                        'sans': ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom Utilities */
+        .glass-nav {
+            background: rgba(253, 252, 249, 0.9);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+        }
+        
+        .product-card-hover:hover .product-img {
+            transform: scale(1.05);
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #D4AF37;
+            border-radius: 10px;
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s ease-out;
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Loading animation */
+        @keyframes loading {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        .animate-loading {
+            animation: loading 1.5s infinite;
+        }
+
+        /* Mobile specific fixes - More compact */
+        @media (max-width: 640px) {
+            .hero-title {
+                font-size: 2.75rem; 
+                line-height: 1.1;
+            }
+            section {
+                padding-top: 3.5rem !important;
+                padding-bottom: 3.5rem !important;
+            }
+            .hero-section {
+                padding-top: 6rem !important;
+            }
+        }
+
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="bg-art-beige text-art-charcoal font-sans overflow-x-hidden">
+
+    <!-- Preloader -->
+    <div id="preloader" class="fixed inset-0 z-[9999] bg-art-charcoal flex items-center justify-center transition-opacity duration-700">
+        <div class="text-center">
+            <h1 class="font-serif text-3xl text-art-gold animate-pulse tracking-tighter">Pancong<span>.</span></h1>
+            <div class="mt-3 h-0.5 w-16 bg-art-gold/30 mx-auto overflow-hidden">
+                <div class="h-full bg-art-gold animate-loading"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav id="navbar" class="fixed top-0 w-full z-50 transition-all duration-500 px-4 md:px-6 py-5 md:py-8">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <a href="#" class="font-serif text-lg md:text-2xl font-black tracking-tighter flex items-center gap-1">
+                Pancong<span class="text-art-gold">.</span>
+            </a>
+            
+            <div class="hidden md:flex items-center gap-10">
+                <a href="#catalog" class="text-[10px] font-bold uppercase tracking-[0.2em] hover:text-art-gold transition-colors">Catalog</a>
+                <a href="#story" class="text-[10px] font-bold uppercase tracking-[0.2em] hover:text-art-gold transition-colors">Story</a>
+                <a href="#heritage" class="text-[10px] font-bold uppercase tracking-[0.2em] hover:text-art-gold transition-colors">Heritage</a>
+                <a href="#location" class="text-[10px] font-bold uppercase tracking-[0.2em] hover:text-art-gold transition-colors">Boutique</a>
+                <button onclick="window.openHistory()" class="text-[10px] font-bold uppercase tracking-[0.2em] hover:text-art-gold transition-colors">Orders</button>
+            </div>
+
+            <div class="flex items-center gap-3 md:gap-6">
+                <div class="relative cursor-pointer group p-2" onclick="window.openCart()">
+                    <i data-lucide="shopping-cart" class="w-5 h-5 group-hover:text-art-gold transition-colors"></i>
+                    <span id="cart-badge" class="absolute top-0 right-0 bg-art-gold text-white text-[8px] font-bold w-3.5 h-3.5 rounded-full flex items-center justify-center border border-white">0</span>
+                </div>
+                <button class="md:hidden p-2" onclick="window.toggleMobileMenu()">
+                    <i data-lucide="menu" class="w-5 h-5"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu Overlay -->
+    <div id="mobile-menu" class="fixed inset-0 bg-art-charcoal z-[60] flex flex-col items-center justify-center gap-6 translate-y-full transition-transform duration-500 md:hidden text-white">
+        <button class="absolute top-6 right-6 text-white/50" onclick="window.toggleMobileMenu()">
+            <i data-lucide="x" class="w-7 h-7"></i>
+        </button>
+        <a href="#catalog" class="font-serif text-2xl hover:text-art-gold transition-colors" onclick="window.toggleMobileMenu()">Catalog</a>
+        <a href="#story" class="font-serif text-2xl hover:text-art-gold transition-colors" onclick="window.toggleMobileMenu()">Our Story</a>
+        <a href="#heritage" class="font-serif text-2xl hover:text-art-gold transition-colors" onclick="window.toggleMobileMenu()">Heritage</a>
+        <a href="#location" class="font-serif text-2xl hover:text-art-gold transition-colors" onclick="window.toggleMobileMenu()">Boutique</a>
+        <button onclick="window.openHistory(); window.toggleMobileMenu();" class="font-serif text-2xl hover:text-art-gold transition-colors">My Orders</button>
+        
+        <div class="mt-4 flex gap-5">
+            <a href="#" class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center"><i data-lucide="instagram" class="w-4 h-4"></i></a>
+            <a href="#" class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center"><i data-lucide="facebook" class="w-4 h-4"></i></a>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero-section relative min-h-screen flex items-center pt-24 pb-16 px-4 md:px-6 lg:px-20 overflow-hidden">
+        <div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+            <div class="reveal order-2 lg:order-1 text-center lg:text-left">
+                <div class="flex items-center justify-center lg:justify-start gap-3 mb-4 md:mb-6">
+                    <div class="h-[1px] w-8 bg-art-gold"></div>
+                    <span class="text-[8px] md:text-[11px] font-bold uppercase tracking-[0.3em] text-art-gold">Artisan Collection</span>
+                </div>
+                <h2 class="hero-title font-serif text-4xl leading-tight font-black mb-5 md:mb-8 tracking-tighter">
+                    Pancong <span class="italic text-art-gold font-normal">Lumer</span> <br class="hidden md:block"> Lumer in Every Bite.
+                </h2>
+                <p class="text-art-slate/70 text-sm md:text-lg mb-8 md:mb-10 max-w-md mx-auto lg:mx-0 font-light leading-relaxed italic">
+                    Rahasia kelezatan Pancong kami tidak instan. Kami memperlakukan setiap adonan sebagai mahakarya artisan.
+                </p>
+                <div class="flex flex-col sm:flex-row flex-wrap justify-center lg:justify-start gap-3 md:gap-4">
+                    <button onclick="document.getElementById('catalog').scrollIntoView()" class="bg-art-charcoal text-white px-8 md:px-10 py-3.5 md:py-5 rounded-full text-[9px] md:text-[11px] font-bold uppercase tracking-widest hover:bg-art-gold transition-all shadow-lg">
+                        Explore flavors
+                    </button>
+                    <button onclick="document.getElementById('story').scrollIntoView()" class="border border-art-charcoal/20 px-8 md:px-10 py-3.5 md:py-5 rounded-full text-[9px] md:text-[11px] font-bold uppercase tracking-widest hover:bg-art-charcoal hover:text-white transition-all">
+                        Our Story
+                    </button>
+                </div>
+            </div>
+            
+            <div class="relative reveal h-[300px] md:h-[500px] lg:h-[700px] order-1 lg:order-2">
+                <div class="absolute inset-0 bg-art-gold/5 rounded-2xl md:rounded-3xl -rotate-1 lg:-rotate-3 transition-transform hover:rotate-0 duration-700"></div>
+                
+                <!-- ==========================================
+                     GANTI FOTO HERO UTAMA DI BAWAH INI
+                =========================================== -->
+                <img id="hero-img" src="img/tiramisu.jpg" 
+                     class="w-full h-full object-cover rounded-2xl md:rounded-3xl shadow-xl relative z-10 brightness-95" alt="Pancong Artisan">
+                
+                <div class="absolute -bottom-4 -left-4 bg-white p-3 md:p-8 rounded-xl shadow-lg z-20 border border-art-gold/10 hidden sm:block">
+                    <div class="flex items-center gap-3 md:gap-4">
+                        <div class="w-8 h-8 md:w-12 md:h-12 rounded-full bg-art-gold/10 flex items-center justify-center">
+                            <i data-lucide="award" class="text-art-gold w-4 h-4 md:w-5 md:h-5"></i>
+                        </div>
+                        <div>
+                            <p class="text-[7px] md:text-[10px] font-bold uppercase tracking-widest text-art-gold">Quality</p>
+                            <p class="font-serif text-sm md:text-lg font-bold italic">Top Choice 2024</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Our Story Section -->
+    <section id="story" class="py-16 md:py-32 px-4 md:px-6 bg-white overflow-hidden">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid lg:grid-cols-2 gap-16 items-center">
+                <div class="reveal">
+                    <span class="text-art-gold text-[9px] md:text-[11px] font-bold uppercase tracking-[0.4em] block mb-4">Since 2025</span>
+                    <h3 class="font-serif text-4xl md:text-5xl font-black tracking-tighter mb-8">The Tale of Our <br><span class="italic font-normal text-art-gold">Legacy.</span></h3>
+                    
+                    <!-- ==========================================
+                         EDIT TEKS SEJARAH / PROFIL DI SINI
+                    =========================================== -->
+                    <div class="space-y-6 text-art-slate/70 font-light leading-relaxed italic text-sm md:text-base">
+                        <p>Berawal dari sebuah gerobak kayu sederhana di sudut jalan ibu kota Bogor pada tahun 2025, sang maestro resep kami, Bapak Ummuy, memulai dedikasinya untuk menyempurnakan kudapan tradisional yang sering terlupakan.</p>
+                        <p>Beliau percaya bahwa makanan jalanan pantas mendapatkan rasa hormat yang sama seperti hidangan di butik pastry ternama. Dengan kesabaran tinggi, teknik fermentasi adonan selama 24 jam pun ditemukan sebuah metode yang kini menjadi fondasi utama kelembutan Pancong Lumer kami.</p>
+                        <p>Hari ini, kami melangkah maju sebagai destinasi gastronomi modern tanpa pernah melepaskan akar tradisi kami. Setiap butik kami dirancang untuk menghadirkan kembali memori masa kecil, namun dengan kualitas bahan premium dari seluruh penjuru dunia.</p>
+                    </div>
+
+                    <div class="mt-10 flex items-center gap-6 text-left">
+                        <div class="w-16 h-16 rounded-full overflow-hidden border-2 border-art-gold/20 shrink-0">
+                            <!-- FOTO FOUNDER -->
+                            <img src="https://images.unsplash.com/photo-1668717997591-403c8ed5933f?auto=format&fit=crop&q=80&w=150" alt="Founder">
+                        </div>
+                        <div>
+                            <p class="font-serif text-lg font-bold">Bapak Ummuy</p>
+                            <p class="text-[10px] font-bold uppercase tracking-widest text-art-gold">Founder Pancong Lumer</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ==========================================
+                     GANTI FOTO-FOTO MOZAIK CERITA DI SINI
+                =========================================== -->
+                <div class="grid grid-cols-2 gap-4 reveal">
+                    <div class="space-y-4">
+                        <div class="aspect-[3/4] rounded-2xl overflow-hidden shadow-lg">
+                            <img src="https://images.unsplash.com/photo-1556910103-1c02745aae4d?auto=format&fit=crop&q=80&w=600" class="w-full h-full object-cover" alt="History 1">
+                        </div>
+                        <div class="aspect-square rounded-2xl overflow-hidden shadow-lg">
+                            <img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&q=80&w=600" class="w-full h-full object-cover" alt="History 2">
+                        </div>
+                    </div>
+                    <div class="space-y-4 pt-8">
+                        <div class="aspect-square rounded-2xl overflow-hidden shadow-lg">
+                            <img src="https://images.unsplash.com/photo-1517433670267-08bbd4be890f?auto=format&fit=crop&q=80&w=600" class="w-full h-full object-cover" alt="History 3">
+                        </div>
+                        <div class="aspect-[3/4] rounded-2xl overflow-hidden shadow-lg">
+                            <img src="https://images.unsplash.com/photo-1558961363-fa8fdf82db35?auto=format&fit=crop&q=80&w=600" class="w-full h-full object-cover" alt="History 4">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Catalog Section -->
+    <section id="catalog" class="py-12 md:py-32 px-4 md:px-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex flex-col lg:flex-row justify-between lg:items-end mb-8 md:mb-20 gap-6">
+                <div class="reveal">
+                    <h3 class="font-serif text-3xl md:text-5xl font-black tracking-tighter mb-4">The Selection<span>.</span></h3>
+                    <div class="flex flex-wrap gap-4 md:gap-8 border-b border-art-charcoal/5 overflow-x-auto pb-1 no-scrollbar">
+                        <button class="filter-chip active text-[8px] md:text-[10px] font-bold uppercase tracking-widest py-3 border-b-2 border-art-gold transition-all whitespace-nowrap" data-cat="Semua">All Crafts</button>
+                        <button class="filter-chip text-[8px] md:text-[10px] font-bold uppercase tracking-widest py-3 border-b-2 border-transparent text-art-charcoal/40 hover:text-art-charcoal transition-all whitespace-nowrap" data-cat="Signature">Signature</button>
+                        <button class="filter-chip text-[8px] md:text-[10px] font-bold uppercase tracking-widest py-3 border-b-2 border-transparent text-art-charcoal/40 hover:text-art-charcoal transition-all whitespace-nowrap" data-cat="Premium">Premium</button>
+                        <button class="filter-chip text-[8px] md:text-[10px] font-bold uppercase tracking-widest py-3 border-b-2 border-transparent text-art-charcoal/40 hover:text-art-charcoal transition-all whitespace-nowrap" data-cat="Heritage">Heritage</button>
+                    </div>
+                </div>
+                <div class="relative w-full lg:max-w-xs reveal">
+                    <input type="text" id="search-input" placeholder="Search flavor..." 
+                           class="w-full bg-transparent border-b border-art-charcoal/20 py-2 outline-none focus:border-art-gold transition-colors italic text-xs">
+                    <i data-lucide="search" class="absolute right-0 top-2 w-3.5 h-3.5 text-art-charcoal/30"></i>
+                </div>
+            </div>
+
+            <div id="catalog-grid" class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-12">
+                <!-- Items injected via JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Heritage Highlight -->
+    <section id="heritage" class="bg-art-charcoal text-white py-16 md:py-32 px-4 md:px-6 overflow-hidden relative">
+        <div class="absolute top-0 right-0 w-full lg:w-1/3 h-full bg-art-gold/5 pointer-events-none"></div>
+        <div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-10 lg:gap-20 items-center relative z-10">
+            <div class="reveal text-center lg:text-left">
+                <span class="text-art-gold text-[9px] md:text-[11px] font-bold uppercase tracking-[0.4em] block mb-4">Philosophy</span>
+                <h3 class="font-serif text-3xl md:text-5xl lg:text-7xl font-black mb-6 leading-tight tracking-tighter">
+                    Born from <span class="italic font-normal">Patience</span>.
+                </h3>
+                <div class="space-y-5 md:space-y-8 text-left max-w-md mx-auto lg:mx-0">
+                    <div class="flex gap-4 items-start">
+                        <div class="w-9 h-9 md:w-12 md:h-12 shrink-0 bg-white/5 rounded-full flex items-center justify-center border border-white/10">
+                            <i data-lucide="timer" class="text-art-gold w-4 h-4 md:w-5 md:h-5"></i>
+                        </div>
+                        <div>
+                            <h5 class="font-serif text-base md:text-xl mb-1 italic">24h Maturation</h5>
+                            <p class="text-white/50 text-[10px] md:text-sm leading-relaxed">Adonan difermentasi perlahan untuk tekstur sempurna.</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-4 items-start">
+                        <div class="w-9 h-9 md:w-12 md:h-12 shrink-0 bg-white/5 rounded-full flex items-center justify-center border border-white/10">
+                            <i data-lucide="droplet" class="text-art-gold w-4 h-4 md:w-5 md:h-5"></i>
+                        </div>
+                        <div>
+                            <h5 class="font-serif text-base md:text-xl mb-1 italic">Natural Purity</h5>
+                            <p class="text-white/50 text-[10px] md:text-sm leading-relaxed">Hanya santan kelapa pilihan diperas manual setiap fajar.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="reveal group relative px-4 md:px-0 max-w-sm mx-auto w-full">
+                <div class="aspect-[4/5] rounded-2xl overflow-hidden shadow-2xl">
+                    <!-- FOTO BAGIAN HERITAGE -->
+                    <img src="https://images.unsplash.com/photo-1599785209707-a456fc1337bb?auto=format&fit=crop&q=80&w=1200" 
+                         class="w-full h-full object-cover grayscale transition-all duration-700 group-hover:grayscale-0 group-hover:scale-110" alt="Process">
+                </div>
+                <div class="absolute -bottom-4 -right-2 md:-bottom-10 md:-right-10 w-24 h-24 md:w-48 md:h-48 bg-art-gold rounded-full flex items-center justify-center text-art-charcoal text-center p-3 md:p-6 border-4 md:border-8 border-art-charcoal rotate-12 shadow-xl">
+                    <p class="font-serif text-[8px] md:text-sm font-black leading-tight">ORIGINAL RECIPE SINCE 2025</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Boutique Location -->
+    <section id="location" class="py-16 md:py-32 px-4 md:px-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="bg-white rounded-[24px] md:rounded-[40px] shadow-sm border border-art-gold/10 overflow-hidden reveal">
+                <div class="grid lg:grid-cols-2">
+                    <div class="p-8 md:p-12 lg:p-20 flex flex-col justify-center text-center lg:text-left">
+                        <span class="text-art-gold text-[9px] font-bold uppercase tracking-widest block mb-3">Visit Us</span>
+                        <h3 class="font-serif text-2xl md:text-4xl lg:text-5xl font-black mb-6 md:mb-8 tracking-tighter">Grand Boutique Experience<span>.</span></h3>
+                        <div class="space-y-4 md:space-y-6 mb-8 md:mb-10">
+                            <div class="flex items-center justify-center lg:justify-start gap-3">
+                                <i data-lucide="map-pin" class="text-art-gold w-4 h-4"></i>
+                                <p class="text-[10px] md:text-sm font-medium">Jl. Perdana Raya No.35, Bogor Utara.</p>
+                            </div>
+                            <div class="flex items-center justify-center lg:justify-start gap-3">
+                                <i data-lucide="clock" class="text-art-gold w-4 h-4"></i>
+                                <p class="text-[10px] md:text-sm font-medium">10.00 — 22.00 WIB</p>
+                            </div>
+                        </div>
+                        <button onclick="window.open('//maps.app.goo.gl/EqkbEKzT6qRJFx318')"
+                        class="bg-art-charcoal text-white px-6 py-3.5 rounded-xl text-[9px] font-bold uppercase tracking-widest self-center lg:self-start hover:bg-art-gold transition-all">
+                        Get Directions </button>
+                    </div>
+                    <div class="h-[250px] md:h-[400px] lg:h-auto min-h-[300px]"> 
+                       <iframe 
+                        class="w-full h-full grayscale brightness-90 contrast-125"
+                        src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d2093.933215764833!2d106.79225701103154!3d-6.559218158951832!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sid!4v1768182729703!5m2!1sen!2sid"
+                        allowfullscreen="" loading="lazy"></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer - Exclusively Left-Aligned -->
+    <footer class="bg-art-charcoal text-white py-12 md:py-24 px-4 md:px-6">
+        <div class="max-w-7xl mx-auto text-left">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 md:gap-16 mb-12 md:mb-20">
+                <div class="col-span-1 md:col-span-2 text-left">
+                    <h2 class="font-serif text-2xl md:text-4xl font-black tracking-tighter mb-5">Pancong<span class="text-art-gold">.</span></h2>
+                    <p class="text-white/40 max-w-xs text-xs italic font-light leading-relaxed">Melestarikan rasa tradisional Indonesia melalui sentuhan artisan yang tak tertandingi.</p>
+                    <div class="flex justify-start gap-4 mt-6">
+                        <a href="#" class="w-9 h-9 rounded-full border border-white/10 flex items-center justify-center hover:bg-art-gold hover:text-art-charcoal transition-all">
+                            <i data-lucide="instagram" class="w-3.5 h-3.5"></i>
+                        </a>
+                        <a href="#" class="w-9 h-9 rounded-full border border-white/10 flex items-center justify-center hover:bg-art-gold hover:text-art-charcoal transition-all">
+                            <i data-lucide="facebook" class="w-3.5 h-3.5"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="text-left">
+                    <h6 class="text-[9px] font-bold uppercase tracking-[0.3em] text-art-gold mb-5">Navigation</h6>
+                    <ul class="space-y-3 text-[11px] text-white/60">
+                        <li><a href="#catalog" class="hover:text-white transition-colors">Catalog</a></li>
+                        <li><a href="#story" class="hover:text-white transition-colors">Our Story</a></li>
+                        <li><a href="#heritage" class="hover:text-white transition-colors">Process</a></li>
+                        <li><a href="#location" class="hover:text-white transition-colors">Boutique</a></li>
+                    </ul>
+                </div>
+                <div class="text-left">
+                    <h6 class="text-[9px] font-bold uppercase tracking-[0.3em] text-art-gold mb-5">Newsletter</h6>
+                    <p class="text-white/40 text-[10px] mb-5 italic">Private circle for exclusive flavors.</p>
+                    <div class="flex gap-2 justify-start">
+                        <input type="email" placeholder="Email" class="bg-white/5 border border-white/10 rounded-lg px-4 py-2.5 text-[10px] w-full max-w-[200px] md:max-w-none focus:border-art-gold outline-none">
+                        <button class="bg-art-gold text-art-charcoal p-2.5 rounded-lg"><i data-lucide="chevron-right" class="w-3.5 h-3.5"></i></button>
+                    </div>
+                </div>
+            </div>
+            <div class="pt-6 md:pt-10 border-t border-white/5 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <p class="text-[8px] md:text-[10px] font-bold tracking-widest text-white/20 uppercase">© 2024 Pancong Artisan Heritage.</p>
+                <p class="text-[8px] md:text-[10px] font-bold text-white/20 uppercase">ID: <span id="user-id-display" class="text-art-gold">Guest</span></p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modals -->
+    <div id="detail-modal-overlay" class="fixed inset-0 bg-art-charcoal/80 backdrop-blur-md z-[100] hidden opacity-0 transition-opacity duration-500" onclick="window.closeDetail()"></div>
+    <div id="detail-modal" class="fixed inset-x-0 bottom-0 lg:right-0 lg:top-0 lg:left-auto h-[85vh] lg:h-full w-full lg:max-w-2xl bg-white z-[101] translate-y-full lg:translate-y-0 lg:translate-x-full transition-transform duration-500 shadow-2xl flex flex-col rounded-t-[24px] lg:rounded-none">
+        <div class="flex justify-between items-center p-5 md:p-8 border-b border-art-charcoal/5">
+            <span class="text-[9px] font-bold uppercase tracking-widest text-art-gold">Selection</span>
+            <button onclick="window.closeDetail()" class="p-2"><i data-lucide="x" class="w-5 h-5"></i></button>
+        </div>
+        <div class="flex-1 overflow-y-auto custom-scrollbar">
+            <div class="h-40 md:h-64 lg:h-96 relative overflow-hidden">
+                <img id="detail-img" src="" class="w-full h-full object-cover" alt="">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
+            </div>
+            <div class="p-5 md:p-12">
+                <h3 id="detail-name" class="font-serif text-2xl md:text-4xl font-black tracking-tighter mb-2">Name</h3>
+                <p id="detail-price" class="text-art-gold text-lg md:text-2xl font-black mb-5">IDR 0</p>
+                <p id="detail-desc" class="text-art-slate/60 italic text-xs leading-relaxed mb-6 md:mb-10"></p>
+                
+                <div class="space-y-6 md:space-y-8">
+                    <div>
+                        <h6 class="text-[8px] font-bold uppercase tracking-widest text-art-charcoal mb-3">Ingredients</h6>
+                        <div id="detail-ingredients" class="flex flex-wrap gap-2"></div>
+                    </div>
+                    <div>
+                        <h6 class="text-[8px] font-bold uppercase tracking-widest text-art-charcoal mb-3">Toppings</h6>
+                        <div id="detail-toppings-list" class="grid grid-cols-1 gap-2"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="p-5 md:p-8 border-t border-art-charcoal/5 bg-art-beige">
+            <button id="detail-add-btn" class="w-full bg-art-charcoal text-white py-4 rounded-xl text-[9px] md:text-[11px] font-bold uppercase tracking-widest hover:bg-art-gold transition-all">Add to Bag</button>
+        </div>
+    </div>
+
+    <div id="cart-modal-overlay" class="fixed inset-0 bg-art-charcoal/80 backdrop-blur-md z-[100] hidden opacity-0 transition-opacity duration-500" onclick="window.closeCart()"></div>
+    <div id="cart-modal" class="fixed inset-x-0 bottom-0 lg:right-0 lg:top-0 lg:left-auto h-[85vh] lg:h-full w-full lg:max-w-md bg-white z-[101] translate-y-full lg:translate-y-0 lg:translate-x-full transition-transform duration-500 shadow-2xl flex flex-col rounded-t-[24px] lg:rounded-none">
+        <div class="flex justify-between items-center p-5 md:p-8 border-b border-art-charcoal/5">
+            <h3 class="font-serif text-xl md:text-2xl font-black italic">Bag<span>.</span></h3>
+            <button onclick="window.closeCart()" class="p-2"><i data-lucide="x" class="w-5 h-5"></i></button>
+        </div>
+        <div id="cart-items-list" class="flex-1 overflow-y-auto p-5 md:p-8 custom-scrollbar"></div>
+        <div class="p-5 md:p-8 bg-art-beige border-t border-art-gold/10">
+            <div class="flex justify-between items-center mb-5 md:mb-8">
+                <span class="text-[8px] font-bold uppercase tracking-widest text-art-charcoal/40">Total</span>
+                <span id="cart-subtotal" class="font-serif text-lg md:text-2xl font-black text-art-gold">IDR 0</span>
+            </div>
+            <div class="space-y-2 mb-5 md:mb-8">
+                <input type="text" id="input-name" placeholder="Name" class="w-full bg-white border border-art-charcoal/5 rounded-lg px-4 py-2.5 text-xs focus:border-art-gold outline-none">
+                <textarea id="input-address" placeholder="Address" class="w-full bg-white border border-art-charcoal/5 rounded-lg px-4 py-2.5 text-xs focus:border-art-gold outline-none h-16 md:h-24"></textarea>
+            </div>
+            <button onclick="window.handleCheckout()" class="w-full bg-art-charcoal text-white py-4 rounded-xl text-[9px] md:text-[11px] font-bold uppercase tracking-widest hover:bg-art-gold transition-all">Checkout via WhatsApp</button>
+        </div>
+    </div>
+
+    <div id="history-modal-overlay" class="fixed inset-0 bg-art-charcoal/80 backdrop-blur-md z-[100] hidden opacity-0 transition-opacity duration-500" onclick="window.closeHistory()"></div>
+    <div id="history-modal" class="fixed inset-x-0 bottom-0 lg:right-0 lg:top-0 lg:left-auto h-[85vh] lg:h-full w-full lg:max-w-md bg-white z-[101] translate-y-full lg:translate-y-0 lg:translate-x-full transition-transform duration-500 shadow-2xl flex flex-col rounded-t-[24px] lg:rounded-none">
+        <div class="flex justify-between items-center p-5 md:p-8 border-b border-art-charcoal/5">
+            <h3 class="font-serif text-xl md:text-2xl font-black italic">Orders<span>.</span></h3>
+            <button onclick="window.closeHistory()" class="p-2"><i data-lucide="x" class="w-5 h-5"></i></button>
+        </div>
+        <div id="orders-list" class="flex-1 overflow-y-auto p-5 md:p-8 custom-scrollbar space-y-4"></div>
+    </div>
+
+    <div id="toast" class="fixed bottom-8 left-1/2 -translate-x-1/2 z-[200] bg-art-charcoal text-white px-6 py-3 rounded-full text-[8px] md:text-[9px] font-bold uppercase tracking-widest border border-art-gold shadow-xl translate-y-20 opacity-0 transition-all duration-500 text-center">Done</div>
+
+    <script>
+        // ==========================================================================
+        // PENANDA KHUSUS: KONFIGURASI TOKO
+        // Ganti nomor WhatsApp di sini (gunakan awalan 62)
+        // ==========================================================================
+        const ADMIN_PHONE = "6289663152626";
+
+        let cart = JSON.parse(localStorage.getItem('pancong_cart') || '[]');
+        let orders = JSON.parse(localStorage.getItem('pancong_orders') || '[]');
+        let activeCategory = 'Semua';
+        let searchQuery = '';
+
+        // ==========================================================================
+        // PENANDA KHUSUS: DAFTAR MENU KATALOG (Foto & Detail)
+        // Tambah atau edit menu di dalam tanda kurung [ ] di bawah ini.
+        // Pastikan format: id, category, name, desc, longDesc, price, img, ingredients
+        // ==========================================================================
+        const menuItems = [
+            { 
+                id: 'p1', 
+                category: 'Signature', 
+                name: "Pancong Keju Susu", 
+                desc: "Classic favorite. Melty cheese with sweetened condensed milk.", 
+                longDesc: "Perpaduan klasik yang tak pernah salah. Adonan pancong lembut yang diselimuti parutan keju cheddar melimpah dan siraman susu kental manis, menciptakan rasa gurih dan manis yang creamy di setiap gigitan.",
+                price: 8000, 
+                img: "img/keju-susu.jpg", 
+                ingredients: ["Premium Cheddar Cheese", "Condensed Milk", "Butter", "Fluffy Pancong Base"] 
+            },
+            { 
+                id: 'p2', 
+                category: 'Premium', 
+                name: "Pancong Strawberry", 
+                desc: "Sweet and tangy strawberry glaze with fresh notes.", 
+                longDesc: "Kesegaran rasa buah stroberi yang menyeimbangkan manisnya adonan pancong. Dilengkapi dengan selai stroberi pilihan dan topping crunchy, memberikan sensasi rasa asam manis yang ceria dan menyegarkan.",
+                price: 8000, 
+                img: "img/strawberry.jpg", 
+                ingredients: ["Strawberry Glaze", "Rainbow Sprinkles", "Vanilla Cream", "Strawberry Chunks"] 
+            },
+            { 
+                id: 'p3', 
+                category: 'Signature', 
+                name: "Pancang Red Velvet", 
+                desc: "Velvety texture with hints of cocoa and vanilla cream.",
+                longDesc: "Varian best-seller dengan warna merah merona yang ikonik. Menawarkan tekstur 'velvety' yang halus dengan sentuhan rasa kakao ringan, disempurnakan dengan topping remah red velvet atau saus keju yang mewah.",
+                price: 8000, 
+                img: "img/red -velvet.jpg", 
+                ingredients: ["Red Velvet Crumble", "White Chocolate Sauce", "Cocoa Powder", "Cream Cheese"] 
+            },
+            { 
+                id: 'p4', 
+                category: 'Premium', 
+                name: "Pancong Chocolatte", 
+                desc: "Rich dark chocolate melt for the ultimate cocoa lover.",
+                longDesc: "Surga bagi pencinta cokelat. Pancong hangat lumer berpadu dengan saus cokelat premium yang pekat dan taburan meises atau choco chips, menghadirkan rasa manis legit yang memanjakan lidah.",
+                price: 8000, 
+                img: "img/coklat-chip.jpg", 
+                ingredients: ["Premium Chocolate Sauce", "Chocolate Chips", "Cocoa Powder", "Sweetened Milk"] 
+            },
+            { 
+                id: 'p5', 
+                category: 'Heritage', 
+                name: "Pancong Tiramisu", 
+                desc: "Italian-inspired flavor with coffee and mascarpone notes.",
+                longDesc: "Cita rasa elegan ala dessert Italia dalam bentuk pancong. Kombinasi aroma kopi yang harum dengan krim tiramisu yang lembut, menciptakan rasa manis yang sophisticated dan tidak membosankan.",
+                price: 8000, 
+                img: "img/tiramisu.jpg", 
+                ingredients: ["Tiramisu Glaze", "Coffee Powder Dusting", "Ladyfinger Crumbs", "Mascarpone Essence"] 
+            },
+            { 
+                id: 'p6', 
+                category: 'Heritage', 
+                name: "Pancong Taro", 
+                desc: "Unique sweet earthy flavor with a creamy purple finish.",
+                longDesc: "Rasa unik dari ubi ungu (taro) yang manis alami dan creamy. Warna ungunya yang cantik serta aroma yang khas membuat menu ini menjadi pilihan favorit bagi yang mencari rasa autentik dan menenangkan.",
+                price: 8000, 
+                img: "img/taro.jpg", 
+                ingredients: ["Taro Cream Sauce", "Sweet Condensed Milk", "Taro Powder", "Coconut Flakes"] 
+            }
+        ];
+
+        // ==========================================================================
+        // PENANDA KHUSUS: DAFTAR TOPPING
+        // Edit atau tambah topping baru di sini.
+        // ==========================================================================
+        const toppingOptions = [
+            { id: 't1', name: "Extra Melted Cheese", price: 3000 },
+            { id: 't2', name: "Dark Choco Milo", price: 3000 },
+            { id: 't3', name: "Dark Choco Oreo", price: 3000 },
+            { id: 't4', name: "Almond", price: 3000 },
+            { id: 't5', name: "Chococrunch", price: 3000 }
+        ];
+
+        const init = () => {
+            renderCatalog();
+            updateCartUI();
+            renderOrders();
+            setupIntersectionObserver();
+            lucide.createIcons();
+            setTimeout(() => {
+                const loader = document.getElementById('preloader');
+                if (loader) { loader.classList.add('opacity-0'); setTimeout(() => loader.remove(), 700); }
+            }, 800);
+        };
+
+        const saveToStorage = () => {
+            localStorage.setItem('pancong_cart', JSON.stringify(cart));
+            localStorage.setItem('pancong_orders', JSON.stringify(orders));
+        };
+
+        const renderCatalog = () => {
+            const container = document.getElementById('catalog-grid');
+            if (!container) return;
+            container.innerHTML = '';
+            
+            const filtered = menuItems.filter(item => {
+                const matchCat = activeCategory === 'Semua' || item.category === activeCategory;
+                const matchSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase());
+                return matchCat && matchSearch;
+            });
+
+            filtered.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'group reveal bg-white rounded-2xl overflow-hidden border border-art-gold/5 product-card-hover transition-all duration-700 hover:shadow-xl hover:shadow-art-gold/5';
+                card.innerHTML = `
+                    <div class="aspect-square relative overflow-hidden cursor-pointer" onclick="window.openDetail('${item.id}')">
+                        <img src="${item.img}" class="product-img w-full h-full object-cover transition-transform duration-700" alt="${item.name}">
+                        <div class="absolute top-2 right-2 bg-white/90 backdrop-blur-sm px-2 py-0.5 rounded-full">
+                            <span class="text-[7px] md:text-[8px] font-bold uppercase tracking-widest text-art-gold">${item.category}</span>
+                        </div>
+                    </div>
+                    <div class="p-3 md:p-8 text-center md:text-left">
+                        <div class="flex flex-col justify-between items-center mb-2 gap-0.5">
+                            <h4 class="font-serif text-sm md:text-2xl font-bold tracking-tighter leading-tight">${item.name}</h4>
+                            <p class="font-serif text-[11px] md:text-lg font-bold text-art-gold italic">IDR ${item.price.toLocaleString()}</p>
+                        </div>
+                        <p class="hidden md:block text-art-slate/50 text-[9px] md:text-xs mb-6 italic leading-relaxed line-clamp-2">${item.desc}</p>
+                        <button onclick="window.openDetail('${item.id}')" class="w-full border border-art-charcoal/10 py-2 rounded-lg text-[7px] md:text-[9px] font-bold uppercase tracking-[0.2em] group-hover:bg-art-charcoal group-hover:text-white transition-all">
+                            Personalize
+                        </button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+            lucide.createIcons();
+            setupIntersectionObserver();
+        };
+
+        const updateCartUI = () => {
+            const list = document.getElementById('cart-items-list');
+            const subtotalEl = document.getElementById('cart-subtotal');
+            const badge = document.getElementById('cart-badge');
+            if (!list) return;
+            list.innerHTML = '';
+            let total = 0, totalItems = 0;
+            if (cart.length === 0) {
+                list.innerHTML = `<div class="py-16 text-center opacity-20"><i data-lucide="shopping-bag" class="mx-auto w-10 h-10 mb-3"></i><p class="italic text-[10px]">Your bag is empty.</p></div>`;
+            } else {
+                cart.forEach(item => {
+                    const topsPrice = item.toppings?.reduce((a, b) => a + b.price, 0) || 0;
+                    const itemTotal = (item.price + topsPrice) * item.quantity;
+                    total += itemTotal; totalItems += item.quantity;
+                    const itemDiv = document.createElement('div');
+                    itemDiv.className = 'flex gap-3 mb-4 pb-4 border-b border-art-charcoal/5 group';
+                    itemDiv.innerHTML = `
+                        <div class="w-14 h-14 md:w-20 md:h-20 rounded-lg overflow-hidden shrink-0"><img src="${item.img}" class="w-full h-full object-cover"></div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex justify-between items-start mb-1">
+                                <h5 class="text-[9px] md:text-xs font-bold uppercase tracking-widest truncate pr-2">${item.name}</h5>
+                                <button onclick="window.removeFromCart('${item.id}')" class="text-red-400 opacity-60"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+                            </div>
+                            <p class="text-[8px] md:text-[10px] text-art-gold mb-2 font-medium italic truncate">${item.toppings?.map(t => t.name).join(', ') || 'No toppings'}</p>
+                            <div class="flex justify-between items-center">
+                                <div class="flex items-center gap-2 border border-art-charcoal/5 rounded px-2 py-0.5">
+                                    <button onclick="window.updateQty('${item.id}', -1)" class="text-[10px]">-</button>
+                                    <span class="text-[10px] font-bold">${item.quantity}</span>
+                                    <button onclick="window.updateQty('${item.id}', 1)" class="text-[10px]">+</button>
+                                </div>
+                                <span class="text-[10px] md:text-xs font-black">IDR ${itemTotal.toLocaleString()}</span>
+                            </div>
+                        </div>`;
+                    list.appendChild(itemDiv);
+                });
+            }
+            badge.innerText = totalItems; subtotalEl.innerText = `IDR ${total.toLocaleString()}`;
+            lucide.createIcons(); saveToStorage();
+        };
+
+        const renderOrders = () => {
+            const list = document.getElementById('orders-list');
+            if (!list) return;
+            list.innerHTML = '';
+            if (orders.length === 0) { list.innerHTML = `<p class="italic text-[9px] md:text-xs text-center opacity-40 py-10">No order history.</p>`; return; }
+            [...orders].sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt)).forEach(order => {
+                const date = new Date(order.createdAt).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
+                const div = document.createElement('div');
+                div.className = 'bg-art-beige p-4 md:p-6 rounded-xl border border-art-gold/5 mb-3';
+                div.innerHTML = `
+                    <div class="flex justify-between items-center mb-3">
+                        <span class="text-[8px] font-bold uppercase tracking-widest text-art-gold">${order.orderNo}</span>
+                        <span class="text-[8px] text-art-charcoal/30 font-bold">${date}</span>
+                    </div>
+                    <div class="space-y-1 mb-3">
+                        ${order.items.map(it => `<p class="text-[9px] md:text-[11px] font-medium flex justify-between gap-4"><span>${it.quantity}x ${it.name}</span> <span class="text-art-charcoal/40 italic shrink-0">IDR ${it.price.toLocaleString()}</span></p>`).join('')}
+                    </div>
+                    <div class="flex justify-between items-center pt-3 border-t border-art-charcoal/5">
+                        <span class="text-[8px] font-bold uppercase tracking-widest">Total</span>
+                        <span class="text-xs md:text-sm font-black text-art-gold">IDR ${order.total.toLocaleString()}</span>
+                    </div>`;
+                list.appendChild(div);
+            });
+        };
+
+        window.openDetail = (id) => {
+            const item = menuItems.find(i => i.id === id); if (!item) return;
+            document.getElementById('detail-img').src = item.img;
+            document.getElementById('detail-name').innerText = item.name;
+            document.getElementById('detail-price').innerText = `IDR ${item.price.toLocaleString()}`;
+            document.getElementById('detail-desc').innerText = item.longDesc;
+            document.getElementById('detail-ingredients').innerHTML = item.ingredients.map(ing => `<span class="px-2 py-0.5 bg-art-gold/5 border border-art-gold/10 rounded-full text-[7px] md:text-[9px] font-bold uppercase tracking-widest text-art-gold">${ing}</span>`).join('');
+            document.getElementById('detail-toppings-list').innerHTML = toppingOptions.map(top => `
+                <label class="flex items-center justify-between p-2.5 md:p-4 bg-art-beige rounded-lg cursor-pointer hover:border-art-gold/50 border border-transparent transition-all">
+                    <div class="flex items-center gap-2"><input type="checkbox" name="topping" value="${top.id}" data-name="${top.name}" data-price="${top.price}" onchange="window.updateDetailPrice('${item.price}')" class="w-3.5 h-3.5 accent-art-gold"><span class="text-[10px] md:text-xs font-semibold">${top.name}</span></div>
+                    <span class="text-[8px] md:text-[10px] font-black text-art-gold">+${top.price.toLocaleString()}</span>
+                </label>`).join('');
+            document.getElementById('detail-add-btn').onclick = () => window.addToCart(item);
+            const overlay = document.getElementById('detail-modal-overlay'), modal = document.getElementById('detail-modal');
+            overlay.classList.remove('hidden'); setTimeout(() => { overlay.classList.add('opacity-100'); modal.classList.remove('translate-y-full', 'lg:translate-x-full'); }, 50);
+            document.body.style.overflow = 'hidden';
+        };
+
+        window.closeDetail = () => {
+            const overlay = document.getElementById('detail-modal-overlay'), modal = document.getElementById('detail-modal');
+            overlay.classList.remove('opacity-100'); modal.classList.add('translate-y-full', 'lg:translate-x-full');
+            setTimeout(() => { overlay.classList.add('hidden'); document.body.style.overflow = ''; }, 500);
+        };
+
+        window.updateDetailPrice = (base) => {
+            let total = parseInt(base); document.querySelectorAll('input[name="topping"]:checked').forEach(el => total += parseInt(el.dataset.price));
+            document.getElementById('detail-price').innerText = `IDR ${total.toLocaleString()}`;
+        };
+
+        window.addToCart = (item) => {
+            const selTops = Array.from(document.querySelectorAll('input[name="topping"]:checked')).map(el => ({ id: el.value, name: el.dataset.name, price: parseInt(el.dataset.price) }));
+            const topKey = selTops.map(t => t.id).sort().join('-'), cartId = `${item.id}_${topKey}`, idx = cart.findIndex(c => c.id === cartId);
+            if (idx > -1) { cart[idx].quantity += 1; } else { cart.push({ id: cartId, itemId: item.id, name: item.name, price: item.price, img: item.img, toppings: selTops, quantity: 1 }); }
+            window.closeDetail(); updateCartUI(); showToast(`${item.name} added.`);
+        };
+
+        window.updateQty = (id, delta) => {
+            const idx = cart.findIndex(i => i.id === id); if (idx === -1) return;
+            cart[idx].quantity += delta; if (cart[idx].quantity <= 0) cart.splice(idx, 1);
+            updateCartUI();
+        };
+
+        window.removeFromCart = (id) => { cart = cart.filter(i => i.id !== id); updateCartUI(); };
+
+        window.handleCheckout = () => {
+            const n = document.getElementById('input-name').value, a = document.getElementById('input-address').value;
+            if (!n || !a) return showToast("Enter details."); if (cart.length === 0) return showToast("Bag is empty.");
+            
+            const oNo = `PCN-${Math.floor(100000 + Math.random() * 900000)}`;
+            const tot = cart.reduce((acc, item) => {
+                const tops = item.toppings?.reduce((x, y) => x + y.price, 0) || 0;
+                return acc + (item.price + tops) * item.quantity;
+            }, 0);
+
+            orders.push({ orderNo: oNo, name: n, address: a, items: [...cart], total: tot, status: 'Done', createdAt: new Date().toISOString() });
+            saveToStorage(); renderOrders();
+
+            // Format Pesan WhatsApp yang diperbaiki (Menampilkan Topping)
+            let msg = `*✨ PESANAN BARU: PANCONG UMMUY ✨*\n`;
+            msg += `-------------------------------------------\n`;
+            msg += `*Order ID:* #${oNo}\n\n`;
+            msg += `*🛍️ DAFTAR PESANAN:*\n`;
+            
+            cart.forEach((it, i) => {
+                const toppingList = it.toppings && it.toppings.length > 0 
+                    ? it.toppings.map(t => t.name).join(', ') 
+                    : 'Original';
+                
+                msg += `${i+1}. *${it.name}* (${it.quantity}x)\n`;
+                msg += `   ▫️ Topping: _${toppingList}_\n`;
+                
+                const unitPrice = it.price + (it.toppings?.reduce((x, y) => x + y.price, 0) || 0);
+                msg += `   ▫️ Subtotal: IDR ${(unitPrice * it.quantity).toLocaleString()}\n\n`;
+            });
+
+            msg += `-------------------------------------------\n`;
+            msg += `*💰 TOTAL PEMBAYARAN:* *IDR ${tot.toLocaleString()}*\n\n`;
+            msg += `*🚚 INFORMASI PENGIRIMAN:*\n`;
+            msg += `▫️ *Nama:* ${n}\n`;
+            msg += `▫️ *Alamat:* ${a}\n\n`;
+            msg += `_Pesanan dikirim melalui Official Pancong Ummuy Portal_ ✨`;
+
+            window.open(`https://wa.me/${ADMIN_PHONE}?text=${encodeURIComponent(msg)}`, '_blank');
+
+            cart = []; updateCartUI(); window.closeCart(); showToast("Order sent.");
+        };
+
+        window.openCart = () => {
+            const ov = document.getElementById('cart-modal-overlay'), md = document.getElementById('cart-modal');
+            ov.classList.remove('hidden'); setTimeout(() => { ov.classList.add('opacity-100'); md.classList.remove('translate-y-full', 'lg:translate-x-full'); }, 50);
+            document.body.style.overflow = 'hidden';
+        };
+
+        window.closeCart = () => {
+            const ov = document.getElementById('cart-modal-overlay'), md = document.getElementById('cart-modal');
+            ov.classList.remove('opacity-100'); md.classList.add('translate-y-full', 'lg:translate-x-full');
+            setTimeout(() => { ov.classList.add('hidden'); document.body.style.overflow = ''; }, 500);
+        };
+
+        window.openHistory = () => {
+            const ov = document.getElementById('history-modal-overlay'), md = document.getElementById('history-modal');
+            ov.classList.remove('hidden'); setTimeout(() => { ov.classList.add('opacity-100'); md.classList.remove('translate-y-full', 'lg:translate-x-full'); }, 50);
+            document.body.style.overflow = 'hidden'; renderOrders();
+        };
+
+        window.closeHistory = () => {
+            const ov = document.getElementById('history-modal-overlay'), md = document.getElementById('history-modal');
+            ov.classList.remove('opacity-100'); md.classList.add('translate-y-full', 'lg:translate-x-full');
+            setTimeout(() => { ov.classList.add('hidden'); document.body.style.overflow = ''; }, 500);
+        };
+
+        window.toggleMobileMenu = () => {
+            const m = document.getElementById('mobile-menu');
+            m.classList.toggle('translate-y-full'); m.classList.toggle('translate-y-0');
+            document.body.style.overflow = m.classList.contains('translate-y-0') ? 'hidden' : '';
+        };
+
+        const showToast = (msg) => {
+            const t = document.getElementById('toast'); t.innerText = msg; t.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => t.classList.add('translate-y-20', 'opacity-0'), 3000);
+        };
+
+        const setupIntersectionObserver = () => {
+            const obs = new IntersectionObserver((e) => { e.forEach(en => { if (en.isIntersecting) en.target.classList.add('active'); }); }, { threshold: 0.1 });
+            document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+        };
+
+        document.getElementById('search-input').addEventListener('input', (e) => { searchQuery = e.target.value; renderCatalog(); });
+        document.querySelectorAll('.filter-chip').forEach(chip => {
+            chip.addEventListener('click', () => { document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active', 'border-art-gold')); chip.classList.add('active', 'border-art-gold'); activeCategory = chip.dataset.cat; renderCatalog(); });
+        });
+
+        window.addEventListener('scroll', () => {
+            const n = document.getElementById('navbar');
+            if (window.scrollY > 30) { n.classList.add('glass-nav', 'py-3'); n.classList.remove('py-5', 'md:py-8'); }
+            else { n.classList.remove('glass-nav', 'py-3'); n.classList.add('py-5', 'md:py-8'); }
+        });
+
+        init();
+    </script>
+</body>
+</html>
